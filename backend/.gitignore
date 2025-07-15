@@ -1,0 +1,21 @@
+
+# Dependency directories
+node_modules/
+logs/
+uploads/
+dist/
+
+
+# Environment variables
+.env
+.env.production
+.env.development
+.env.example
+.vercel
+combined.log
+error.log
+dist/
+
+nginx.conf
+
+
