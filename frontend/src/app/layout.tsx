@@ -1,15 +1,14 @@
-// File: frontend/src/app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
-import { Toaster } from "@/components/ui/toaster";
+import { Providers } from "./provider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Academic Management Platform",
-  description: "University CRM system for education management",
+  description: "University CRM for students, lecturers, and administrators",
 };
 
 export default function RootLayout({
@@ -20,10 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
+        <Providers>
           {children}
-          <Toaster />
-        </AuthProvider>
+          <Toaster position="top-right" />
+        </Providers>
       </body>
     </html>
   );

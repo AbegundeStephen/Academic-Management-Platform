@@ -1,16 +1,21 @@
-// src/users/entities/user.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    UpdateDateColumn,
+    OneToMany,
+    BeforeInsert,
+    BeforeUpdate,
+} from 'typeorm';
+import { Exclude } from 'class-transformer';
+import * as bcrypt from 'bcryptjs';
+import { UserRole } from '../../common/enums/user-role.enum';
+import { Course } from '../../courses/entities/course.entity';
 import { Enrollment } from '../../enrollments/entities/enrollment.entity';
 import { Assignment } from '../../assignments/entities/assignment.entity';
-import { Course } from '../../courses/entities/course.entity';
 
-export enum UserRole {
-    STUDENT = 'student',
-    LECTURER = 'lecturer',
-    ADMIN = 'admin',
-}
-
-@Entity()
+@Entity('users')
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -19,6 +24,7 @@ export class User {
     email: string;
 
     @Column()
+    @Exclude()
     password: string;
 
     @Column({
@@ -34,12 +40,25 @@ export class User {
     @Column()
     lastName: string;
 
+    @Column({ nullable: true })
+    avatar?: string;
+
+    @Column({ nullable: true })
+    phone?: string;
+
+    @Column({ type: 'text', nullable: true })
+    bio?: string;
+
+    @Column({ default: true })
+    isActive: boolean;
+
     @CreateDateColumn()
     createdAt: Date;
 
     @UpdateDateColumn()
     updatedAt: Date;
 
+    // Relationships
     @OneToMany(() => Course, (course) => course.lecturer)
     courses: Course[];
 
@@ -48,4 +67,21 @@ export class User {
 
     @OneToMany(() => Assignment, (assignment) => assignment.student)
     assignments: Assignment[];
+
+    // Methods
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashPassword(): Promise<void> {
+        if (this.password) {
+            this.password = await bcrypt.hash(this.password, 12);
+        }
+    }
+
+    async validatePassword(password: string): Promise<boolean> {
+        return bcrypt.compare(password, this.password);
+    }
+
+    get fullName(): string {
+        return `${this.firstName} ${this.lastName}`;
+    }
 }

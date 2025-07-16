@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { RootState } from "@/app/store/store";
 import {
   fetchCourses,
   enrollCourse,
   dropCourse,
-} from "../store/slices/coursesSlice";
+} from "@/app/store/slices/courseSlice";
+
 import toast from "react-hot-toast";
 
 interface CourseListProps {

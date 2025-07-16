@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { createCourse } from "../store/slices/coursesSlice";
+import { AppDispatch } from "@/app/store/store";
+import { createCourse } from "@/app/store/slices/courseSlice";
 
 interface CreateCourseModalProps {
   isOpen: boolean;
