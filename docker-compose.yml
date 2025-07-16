@@ -17,12 +17,12 @@ services:
     networks:
       - academic_network
 
-  # NestJS Application
-  app:
+  # NestJS Backend
+  backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: academic_app
+    container_name: academic_backend
     depends_on:
       - postgres
     environment:
@@ -35,16 +35,37 @@ services:
       JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
       JWT_EXPIRES_IN: 7d
     ports:
-      - "3000:3000"
+      - "5000:3000"  # NestJS runs on 3000 internally
     volumes:
-      - .:/app
+      - ./backend:/app
       - /app/node_modules
       - uploads_data:/app/uploads
+    working_dir: /app
     command: npm run start:dev
     networks:
       - academic_network
 
-  # Redis (for caching - optional)
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: academic_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev
+    networks:
+      - academic_network
+
+  # Redis (Optional)
   redis:
     image: redis:7-alpine
     container_name: academic_redis
