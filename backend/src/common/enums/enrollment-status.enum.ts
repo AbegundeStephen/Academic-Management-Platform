@@ -4,4 +4,5 @@ export enum EnrollmentStatus {
     REJECTED = 'rejected',
     DROPPED = 'dropped',
     COMPLETED = 'completed',
+    ENROLLED= 'enrolled'
 }

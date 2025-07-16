@@ -67,6 +67,9 @@ export class User {
 
     @OneToMany(() => Assignment, (assignment) => assignment.student)
     assignments: Assignment[];
+    assignmentSubmissions: any;
+    gradedSubmissions: any;
+    comparePassword: any;
 
     // Methods
     @BeforeInsert()

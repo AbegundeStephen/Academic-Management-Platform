@@ -5,16 +5,15 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 // Feature modules
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { CoursesModule } from './courses/courses.module';
-import { EnrollmentsModule } from './enrollments/enrollments.module';
-import { AssignmentsModule } from './assignments/assignments.module';
+import { CoursesModule } from './courses/course.module';
+import { EnrollmentsModule } from './enrollments/enrollment.module';
+import { AssignmentsModule } from './assignments/assignment.module';
 import { AiModule } from './ai/ai.module';
 import { UploadsModule } from './uploads/uploads.module';
 
@@ -54,12 +53,15 @@ import { Assignment } from './assignments/entities/assignment.entity';
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        ttl: configService.get<number>('THROTTLE_TTL', 60),
-        limit: configService.get<number>('THROTTLE_LIMIT', 100),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const options: any = {
+          ttl: configService.get<number>('THROTTLE_TTL', 60),
+          limit: configService.get<number>('THROTTLE_LIMIT', 100),
+          ignoreUserAgents: [/chrome-lighthouse\/([^\/]+)$/], // ignore chrome headless
+        };
+        return options;
+      },
     }),
-
     // File upload configuration
     MulterModule.registerAsync({
       imports: [ConfigModule],

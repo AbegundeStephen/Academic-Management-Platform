@@ -7,6 +7,7 @@ import { UserRole } from '../common/enums/user-role.enum';
 
 @Injectable()
 export class UsersService {
+    findById: any;
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
