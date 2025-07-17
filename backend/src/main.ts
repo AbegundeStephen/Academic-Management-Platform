@@ -11,7 +11,7 @@ async function bootstrap() {
 
   // Get configuration service
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT', 3000);
+  const port = configService.get<number>('PORT', 5000);
   const apiPrefix = configService.get<string>('API_PREFIX', 'api');
 
   // Security middleware
@@ -22,7 +22,7 @@ async function bootstrap() {
 
   // CORS configuration
   app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN', 'http://localhost:3001'),
+    origin: configService.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
     credentials: true,
   });
 

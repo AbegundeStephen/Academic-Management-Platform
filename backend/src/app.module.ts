@@ -38,14 +38,21 @@ import { Assignment } from './assignments/entities/assignment.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
+        port: configService.get<number>('DB_PORT', 5432),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [User, Course, Enrollment, Assignment],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', false),
         logging: configService.get<boolean>('DB_LOGGING', false),
-        ssl: configService.get<string>('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
+        ssl: {
+          rejectUnauthorized: false, // Required for Neon
+        },
+        extra: {
+          ssl: {
+            rejectUnauthorized: false, // Required for Neon
+          },
+        },
       }),
     }),
 
