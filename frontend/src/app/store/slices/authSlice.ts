@@ -24,31 +24,31 @@ const initialState: AuthState = {
     error: null,
 }
 
-export const login = createAsyncThunk(
-    'auth/login',
-    async (credentials: { email: string; password: string; role: string }) => {
-        const response = await api.post('/auth/login', credentials)
-        const { user, accessToken } = response.data;
-        localStorage.setItem('token', accessToken)
-        return { user, accessToken };
-    }
-)
+export const login = createAsyncThunk<
+  { user: User; accessToken: string }, // <== Define payload return type here
+  { email: string; password: string; role: string }
+>("auth/login", async (credentials) => {
+  const response = await api.post("/auth/login", credentials);
+  const { user, accessToken } = response.data;
+  localStorage.setItem("token", accessToken);
+  return { user, accessToken };
+});
 
-export const register = createAsyncThunk(
-    'auth/register',
-    async (userData: {
-        email: string
-        password: string
-        firstName: string
-        lastName: string
-        role: string
-        phone?: string
-    }) => {
-        const response = await api.post('/auth/register', userData)
-        console.log(response)
-        return response.data
-    }
-)
+export const register = createAsyncThunk<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any, // or the proper payload type
+  {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    phone?: string;
+  }
+>("auth/register", async (userData) => {
+  const response = await api.post("/auth/register", userData);
+  return response.data;
+});
 
 export const logout = createAsyncThunk(
     'auth/logout',

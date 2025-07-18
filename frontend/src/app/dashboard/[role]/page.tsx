@@ -11,6 +11,7 @@ export default function DashboardPage({ params }: { params: Promise<{ role: stri
   const { user } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
 
+  console.log(user)
   if (!user || user.role !== role) {
     return (
       <div className="text-center py-12">

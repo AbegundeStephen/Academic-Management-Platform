@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -34,7 +35,7 @@ interface AuthFormProps {
 export default function AuthForm({ type }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { loading, error } = useSelector((state: RootState) => state.auth);
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const token = useSelector(selectAccessToken) || "";
   const userData = useSelector(selectCurrentUser);
@@ -53,20 +54,29 @@ export default function AuthForm({ type }: AuthFormProps) {
       if (type === "login") {
         const result = await dispatch(login(data));
         if (result.type === "auth/login/fulfilled") {
+          const { user, accessToken } = result.payload as {
+            user: any;
+            accessToken: string;
+          };
+
+          if (accessToken) {
+            localStorage.setItem("token", accessToken);
+          }
           toast.success("Login successful!");
-          localStorage.setItem("token", token);
-          router.push(`/dashboard/${userData.user?.role}`);
+
+          const role = user.role; // directly from payload, safe now
+          router.push(`/dashboard/${role}`);
+        } else if (result.type === "auth/login/rejected") {
+          toast.error("Login failed. Please check your credentials.");
         }
       } else {
-        // Validate that firstName and lastName are present
+        // Registration logic same as before
         if (!data.firstName || !data.lastName) {
           toast.error(
             "First name and last name are required for registration."
           );
           return;
         }
-
-        // Cast data to match register's required argument type
         const result = await dispatch(
           register({
             email: data.email,
@@ -77,10 +87,11 @@ export default function AuthForm({ type }: AuthFormProps) {
             phone: data.phone,
           })
         );
-
         if (result.type === "auth/register/fulfilled") {
           toast.success("Registration successful! Please login.");
           router.push("/login");
+        } else if (result.type === "auth/register/rejected") {
+          toast.error("Registration failed. Please try again.");
         }
       }
     } catch (err) {
