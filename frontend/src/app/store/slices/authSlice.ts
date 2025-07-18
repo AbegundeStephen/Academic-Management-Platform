@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { api } from '@/lib/axios'
-import axios from 'axios'
+import { RootState } from '../store'
+
 export interface User {
     id: string
     email: string
@@ -27,9 +28,9 @@ export const login = createAsyncThunk(
     'auth/login',
     async (credentials: { email: string; password: string; role: string }) => {
         const response = await api.post('/auth/login', credentials)
-        const { user, token } = response.data
-        localStorage.setItem('token', token)
-        return { user, token }
+        const { user, accessToken } = response.data;
+        localStorage.setItem('token', accessToken)
+        return { user, accessToken };
     }
 )
 
@@ -43,7 +44,7 @@ export const register = createAsyncThunk(
         role: string
         phone?: string
     }) => {
-        const response = await axios.post('http://localhost:5000/auth/register', userData)
+        const response = await api.post('/auth/register', userData)
         console.log(response)
         return response.data
     }
@@ -61,6 +62,13 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+/**
+ * Updates the authentication state with the provided user and token.
+ *
+ * @param state - The current authentication state.
+ * @param action - The action containing the user and token payload.
+ */
+
         setCredentials: (state, action: PayloadAction<{ user: User; token: string }>) => {
             state.user = action.payload.user
             state.token = action.payload.token
@@ -78,7 +86,8 @@ const authSlice = createSlice({
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false
                 state.user = action.payload.user
-                state.token = action.payload.token
+                state.token = action.payload.accessToken
+                console.log(state.user)
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false
@@ -103,4 +112,7 @@ const authSlice = createSlice({
 })
 
 export const { setCredentials, clearError } = authSlice.actions
+export const selectCurrentUser = (state: RootState) => state.auth;
+export const selectUserRole = (state: RootState) => state.auth.user?.role;
+export const selectAccessToken = (state: RootState) => state.auth.token;
 export default authSlice.reducer

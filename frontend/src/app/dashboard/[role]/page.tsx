@@ -4,16 +4,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { useRouter } from "next/navigation";
 import DashboardCard from "@/components/DashboardCard";
+import { use } from "react";
 
-export default function DashboardPage({
-  params,
-}: {
-  params: { role: string };
-}) {
+export default function DashboardPage({ params }: { params: Promise<{ role: string }> }) {
+   const { role } = use(params);
   const { user } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
 
-  if (!user || user.role !== params.role) {
+  if (!user || user.role !== role) {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
@@ -25,7 +23,7 @@ export default function DashboardPage({
   }
 
   const getDashboardContent = () => {
-    switch (params.role) {
+    switch (role) {
       case "student":
         return (
           <div className="space-y-6">

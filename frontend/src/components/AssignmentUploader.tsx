@@ -2,9 +2,10 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store/store";
 import { submitAssignment } from "@/app/store/slices/assignmentSlice";
 import toast from "react-hot-toast";
+import { useDispatch} from "react-redux";
 
 interface AssignmentUploaderProps {
   assignmentId: string;
@@ -18,8 +19,7 @@ export default function AssignmentUploader({
   const [files, setFiles] = useState<File[]>([]);
   const [textSubmission, setTextSubmission] = useState("");
   const [uploading, setUploading] = useState(false);
-  const dispatch = useDispatch();
-
+  const dispatch: AppDispatch = useDispatch<AppDispatch>();
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
   }, []);
@@ -89,7 +89,7 @@ export default function AssignmentUploader({
             className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
               ${
                 isDragActive
-                  ? "border-primary-500 bg-primary-50"
+                  ? "border-primary-500 bg-blue-50"
                   : "border-gray-300 hover:border-primary-400"
               }`}>
             <input {...getInputProps()} />

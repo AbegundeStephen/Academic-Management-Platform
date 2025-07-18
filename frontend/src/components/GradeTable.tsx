@@ -4,12 +4,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import { fetchAssignments } from "@/app/store/slices/assignmentSlice";
+import { AppDispatch } from "@/app/store/store";
 
 export default function GradeTable() {
   const { assignments, loading } = useSelector(
     (state: RootState) => state.assignments
   );
-  const dispatch = useDispatch();
+ const dispatch: AppDispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchAssignments());

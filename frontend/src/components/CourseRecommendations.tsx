@@ -203,7 +203,7 @@ const CourseRecommendations: React.FC = () => {
           <button
             onClick={generateRecommendations}
             disabled={loading || preferences.interests.length === 0}
-            className="bg-primary-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             {loading ? (
               <div className="flex items-center">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
@@ -276,7 +276,7 @@ const CourseRecommendations: React.FC = () => {
                     <span className="mr-4">{rec.reason}</span>
                     <span>{rec.credits} credits</span>
                   </div>
-                  <button className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors">
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
                     View Course
                   </button>
                 </div>

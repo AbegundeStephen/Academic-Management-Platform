@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { fetchCourses } from "../store/slices/courseSlice";
 import ProtectedRoute from "@/components/ProtectRoute";
-import CourseCard from "@/components/CourseCard";
+import CourseCard from "../../components/CourseCard";
 import CreateCourseModal from "@/components/CreateCoureseModal";
 
 interface Course {
@@ -51,7 +51,7 @@ const CoursesPage: React.FC = () => {
           {canCreateCourse && (
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
               Create Course
             </button>
           )}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
@@ -74,31 +75,60 @@ const SyllabusGenerator: React.FC = () => {
   const handleArrayChange = (
     section: keyof SyllabusData,
     index: number,
-    value: string
+    value: any
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [section]: prev[section].map((item: any, i: number) =>
-        i === index ? value : item
-      ),
-    }));
+    setFormData((prev) => {
+      const sectionData = prev[section];
+
+      if (Array.isArray(sectionData)) {
+        const updatedArray = [...sectionData];
+        updatedArray[index] = value;
+
+        return {
+          ...prev,
+          [section]: updatedArray,
+        };
+      }
+
+      return prev;
+    });
   };
 
   const addArrayItem = (
     section: keyof SyllabusData,
-    defaultValue: any = ""
+    defaultValue: string = ""
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [section]: [...prev[section], defaultValue],
-    }));
-  };
+    setFormData((prev) => {
+      const sectionData = prev[section];
 
+      if (Array.isArray(sectionData)) {
+        const newAssessment = {
+          type: "",
+          percentage: 0,
+          description: "",
+        };
+        return {
+          ...prev,
+          [section]: [...sectionData, newAssessment],
+        };
+      }
+
+      return prev;
+    });
+  };
   const removeArrayItem = (section: keyof SyllabusData, index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      [section]: prev[section].filter((_, i) => i !== index),
-    }));
+    setFormData((prev) => {
+      const sectionData = prev[section];
+
+      if (Array.isArray(sectionData)) {
+        return {
+          ...prev,
+          [section]: sectionData.filter((_, i) => i !== index),
+        };
+      }
+
+      return prev;
+    });
   };
 
   const generateSyllabus = async () => {
@@ -332,13 +362,7 @@ ${formData.resources.map((resource) => `• ${resource}`).join("\n")}
               </div>
             ))}
             <button
-              onClick={() =>
-                addArrayItem("assessments", {
-                  type: "",
-                  percentage: 0,
-                  description: "",
-                })
-              }
+              onClick={() => addArrayItem("assessments", "")}
               className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
               Add Assessment
             </button>
@@ -393,7 +417,8 @@ ${formData.resources.map((resource) => `• ${resource}`).join("\n")}
             </div>
           ) : (
             <div className="bg-white p-4 rounded-md border h-96 flex items-center justify-center text-gray-500">
-              Fill out the form and click "Generate Syllabus" to see the preview
+              Fill out the form and click &quot;Generate Syllabus&quot; to see
+              the preview
             </div>
           )}
         </div>
