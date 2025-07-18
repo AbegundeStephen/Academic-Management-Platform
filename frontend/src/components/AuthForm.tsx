@@ -4,16 +4,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { RootState } from "../store/store";
-import { login, register, clearError } from "../store/slices/authSlice";
+import { RootState } from "../app/store/store";
+import { login, register, clearError } from "../app/store/slices/authSlice";
 import toast from "react-hot-toast";
-
+import { AppDispatch } from "../app/store/store";
 interface AuthFormData {
   email: string;
   password: string;
   firstName?: string;
   lastName?: string;
   role: string;
+  phone?: string;
 }
 
 interface AuthFormProps {
@@ -23,7 +24,7 @@ interface AuthFormProps {
 export default function AuthForm({ type }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { loading, error } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
 
   const {
@@ -32,30 +33,48 @@ export default function AuthForm({ type }: AuthFormProps) {
     formState: { errors },
   } = useForm<AuthFormData>();
 
-  const onSubmit = async (data: AuthFormData) => {
-    setIsLoading(true);
-    dispatch(clearError());
+const onSubmit = async (data: AuthFormData) => {
+  setIsLoading(true);
+  dispatch(clearError());
 
-    try {
-      if (type === "login") {
-        const result = await dispatch(login(data));
-        if (result.type === "auth/login/fulfilled") {
-          toast.success("Login successful!");
-          router.push(`/dashboard/${data.role}`);
-        }
-      } else {
-        const result = await dispatch(register(data));
-        if (result.type === "auth/register/fulfilled") {
-          toast.success("Registration successful! Please login.");
-          router.push("/login");
-        }
+  try {
+    if (type === "login") {
+      const result = await dispatch(login(data));
+      if (result.type === "auth/login/fulfilled") {
+        toast.success("Login successful!");
+        router.push(`/dashboard/${data.role}`);
       }
-    } catch (err) {
-      toast.error(error || "Something went wrong");
-    } finally {
-      setIsLoading(false);
+    } else {
+      // Validate that firstName and lastName are present
+      if (!data.firstName || !data.lastName) {
+        toast.error("First name and last name are required for registration.");
+        return;
+      }
+
+      // Cast data to match register's required argument type
+      const result = await dispatch(
+        register({
+          email: data.email,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: data.role,
+          phone: data.phone,
+        })
+      );
+
+      if (result.type === "auth/register/fulfilled") {
+        toast.success("Registration successful! Please login.");
+        router.push("/login");
+      }
     }
-  };
+  } catch (err) {
+    toast.error(error || "Something went wrong");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -134,7 +153,28 @@ export default function AuthForm({ type }: AuthFormProps) {
                 </p>
               )}
             </div>
-
+            <div>
+              <label htmlFor="phone" className="form-label">
+                Phone Number
+              </label>
+              <input
+                {...registerField("phone", {
+                  required: "Phone number is required",
+                  pattern: {
+                    value: /^\+?[1-9]\d{1,14}$/,
+                    message: "Invalid phone number format",
+                  },
+                })}
+                type="tel"
+                className="form-input"
+                placeholder="Enter your phone number"
+              />
+              {errors.phone && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
             <div>
               <label htmlFor="password" className="form-label">
                 Password

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { api } from '@/lib/axios'
+import axios from 'axios'
 export interface User {
     id: string
     email: string
@@ -40,8 +41,10 @@ export const register = createAsyncThunk(
         firstName: string
         lastName: string
         role: string
+        phone?: string
     }) => {
-        const response = await api.post('/auth/register', userData)
+        const response = await axios.post('http://localhost:5000/auth/register', userData)
+        console.log(response)
         return response.data
     }
 )

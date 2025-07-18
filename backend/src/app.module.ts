@@ -76,17 +76,28 @@ import { Assignment } from './assignments/entities/assignment.entity';
       useFactory: (configService: ConfigService) => ({
         storage: diskStorage({
           destination: (req, file, cb) => {
-            const uploadPath = configService.get<string>('UPLOAD_PATH', './uploads');
+            const uploadPath = configService.get<string>(
+              'UPLOAD_PATH',
+              './uploads',
+            );
             cb(null, uploadPath);
           },
           filename: (req, file, cb) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            cb(null, `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`);
+            const uniqueSuffix =
+              Date.now() + '-' + Math.round(Math.random() * 1e9);
+            cb(
+              null,
+              `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`,
+            );
           },
         }),
         fileFilter: (req, file, cb) => {
-          const allowedTypes = configService.get<string>('ALLOWED_FILE_TYPES', 'pdf,doc,docx').split(',');
-          const fileExtension = extname(file.originalname).toLowerCase().slice(1);
+          const allowedTypes = configService
+            .get<string>('ALLOWED_FILE_TYPES', 'pdf,doc,docx')
+            .split(',');
+          const fileExtension = extname(file.originalname)
+            .toLowerCase()
+            .slice(1);
 
           if (allowedTypes.includes(fileExtension)) {
             cb(null, true);
@@ -112,4 +123,4 @@ import { Assignment } from './assignments/entities/assignment.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

@@ -8,12 +8,9 @@ import { User } from '../users/entities/user.entity';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Enrollment, Course, User]),
-        AuthModule,
-    ],
-    controllers: [EnrollmentsController],
-    providers: [EnrollmentsService],
-    exports: [EnrollmentsService],
+  imports: [TypeOrmModule.forFeature([Enrollment, Course, User]), AuthModule],
+  controllers: [EnrollmentsController],
+  providers: [EnrollmentsService],
+  exports: [EnrollmentsService],
 })
-export class EnrollmentsModule { }
+export class EnrollmentsModule {}

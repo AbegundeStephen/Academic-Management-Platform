@@ -9,9 +9,11 @@ import { Course } from '../courses/entities/course.entity';
 import { User } from '../users/entities/user.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Assignment, AssignmentSubmission, Course, User])],
-    controllers: [AssignmentsController],
-    providers: [AssignmentsService],
-    exports: [AssignmentsService],
+  imports: [
+    TypeOrmModule.forFeature([Assignment, AssignmentSubmission, Course, User]),
+  ],
+  controllers: [AssignmentsController],
+  providers: [AssignmentsService],
+  exports: [AssignmentsService],
 })
-export class AssignmentsModule { }
+export class AssignmentsModule {}

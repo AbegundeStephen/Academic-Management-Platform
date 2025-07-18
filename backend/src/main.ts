@@ -32,7 +32,8 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-      disableErrorMessages: configService.get<string>('NODE_ENV') === 'production',
+      disableErrorMessages:
+        configService.get<string>('NODE_ENV') === 'production',
     }),
   );
 

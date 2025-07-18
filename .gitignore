@@ -9,7 +9,7 @@ dist/
 .env
 .env.production
 .env.development
-.env.example/
+.env.example
 .vercel
 combined.log
 error.log

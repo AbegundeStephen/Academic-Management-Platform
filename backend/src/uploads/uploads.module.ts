@@ -9,19 +9,14 @@ import { User } from '../users/entities/user.entity';
 import { Enrollment } from '../enrollments/entities/enrollment.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            Course,
-            Assignment,
-            User,
-            Enrollment
-        ]),
-        MulterModule.register({
-            dest: './uploads',
-        })
-    ],
-    controllers: [UploadsController],
-    providers: [UploadsService],
-    exports: [UploadsService]
+  imports: [
+    TypeOrmModule.forFeature([Course, Assignment, User, Enrollment]),
+    MulterModule.register({
+      dest: './uploads',
+    }),
+  ],
+  controllers: [UploadsController],
+  providers: [UploadsService],
+  exports: [UploadsService],
 })
-export class UploadsModule { }
+export class UploadsModule {}

@@ -10,22 +10,22 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 
 @Module({
-    imports: [
-        PassportModule.register({ defaultStrategy: 'jwt' }),
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_SECRET'),
-                signOptions: {
-                    expiresIn: configService.get<string>('JWT_EXPIRATION_TIME') || '24h',
-                },
-            }),
-            inject: [ConfigService],
-        }),
-        UsersModule,
-    ],
-    controllers: [AuthController],
-    providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard],
-    exports: [AuthService, JwtAuthGuard, RolesGuard, PassportModule],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: configService.get<string>('JWT_EXPIRATION_TIME') || '24h',
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    UsersModule,
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard],
+  exports: [AuthService, JwtAuthGuard, RolesGuard, PassportModule],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -1,12 +1,12 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    UpdateDateColumn,
-    OneToMany,
-    BeforeInsert,
-    BeforeUpdate,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
@@ -17,74 +17,74 @@ import { Assignment } from '../../assignments/entities/assignment.entity';
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({ unique: true })
-    email: string;
+  @Column({ unique: true })
+  email: string;
 
-    @Column()
-    @Exclude()
-    password: string;
+  @Column()
+  @Exclude()
+  password: string;
 
-    @Column({
-        type: 'enum',
-        enum: UserRole,
-        default: UserRole.STUDENT,
-    })
-    role: UserRole;
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.STUDENT,
+  })
+  role: UserRole;
 
-    @Column()
-    firstName: string;
+  @Column()
+  firstName: string;
 
-    @Column()
-    lastName: string;
+  @Column()
+  lastName: string;
 
-    @Column({ nullable: true })
-    avatar?: string;
+  @Column({ nullable: true })
+  avatar?: string;
 
-    @Column({ nullable: true })
-    phone?: string;
+  @Column({ nullable: true })
+  phone?: string;
 
-    @Column({ type: 'text', nullable: true })
-    bio?: string;
+  @Column({ type: 'text', nullable: true })
+  bio?: string;
 
-    @Column({ default: true })
-    isActive: boolean;
+  @Column({ default: true })
+  isActive: boolean;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    // Relationships
-    @OneToMany(() => Course, (course) => course.lecturer)
-    courses: Course[];
+  // Relationships
+  @OneToMany(() => Course, (course) => course.lecturer)
+  courses: Course[];
 
-    @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
-    enrollments: Enrollment[];
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
+  enrollments: Enrollment[];
 
-    @OneToMany(() => Assignment, (assignment) => assignment.student)
-    assignments: Assignment[];
-    assignmentSubmissions: any;
-    gradedSubmissions: any;
-    comparePassword: any;
+  @OneToMany(() => Assignment, (assignment) => assignment.student)
+  assignments: Assignment[];
+  assignmentSubmissions: any;
+  gradedSubmissions: any;
+  comparePassword: any;
 
-    // Methods
-    @BeforeInsert()
-    @BeforeUpdate()
-    async hashPassword(): Promise<void> {
-        if (this.password) {
-            this.password = await bcrypt.hash(this.password, 12);
-        }
+  // Methods
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword(): Promise<void> {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 12);
     }
+  }
 
-    async validatePassword(password: string): Promise<boolean> {
-        return bcrypt.compare(password, this.password);
-    }
+  async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 
-    get fullName(): string {
-        return `${this.firstName} ${this.lastName}`;
-    }
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 }

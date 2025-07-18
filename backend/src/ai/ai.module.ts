@@ -8,16 +8,9 @@ import { Enrollment } from '../enrollments/entities/enrollment.entity';
 import { Assignment } from '../assignments/entities/assignment.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            User,
-            Course,
-            Enrollment,
-            Assignment
-        ])
-    ],
-    controllers: [AiController],
-    providers: [AiService],
-    exports: [AiService]
+  imports: [TypeOrmModule.forFeature([User, Course, Enrollment, Assignment])],
+  controllers: [AiController],
+  providers: [AiService],
+  exports: [AiService],
 })
-export class AiModule { }
+export class AiModule {}
